@@ -77,15 +77,12 @@
               </li>
               <!-- your navbar here -->
               <div class="dropdown show">
-                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  ステータスを絞り込む
-                </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                  <a class="dropdown-item" href="#">進行中</a>
-                  <a class="dropdown-item" href="#">完了</a>
+                  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ステータスを絞り込む</a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a v-on:click="changeStatus(1)" class="dropdown-item">進行中</a>
+                    <a v-on:click="changeStatus(2)" class="dropdown-item">完了</a>
+                  </div>
                 </div>
-              </div>
             </ul>
           </div>
         </div>
@@ -116,23 +113,7 @@
           </div>
         </div>
       </div>
-      <footer class="footer">
-        <div class="container-fluid">
-          <nav class="float-left">
-            <ul>
-              <li>
-                <a href="#">
-                  Creative Tim
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <div class="copyright float-right">
-            <a href="#" target="_blank">Creative Tim</a> for a better web.
-          </div>
-          <!-- your footer here -->
-        </div>
-      </footer>
+      <my-footer></my-footer>
     </div>
   </div>
   <!--   Core JS Files   -->
@@ -142,6 +123,7 @@
   <script src="assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="assets/js/template.js"></script>
   <script>
     var vm = new Vue({
       el: "#app",
@@ -166,6 +148,9 @@
           this.currentData = this.todoList.filter(
             item => item.project_id == project_id
           )
+        },
+        changeStatus: function (status_id) {
+          console.log("ステータス変更:" + status_id);
         }
       }
     })
