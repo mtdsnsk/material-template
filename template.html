@@ -83,6 +83,7 @@
                 <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ステータスを絞り込む</a>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a v-on:click="changeStatus(0)" class="dropdown-item">全て</a>
                   <a v-on:click="changeStatus(1)" class="dropdown-item">進行中</a>
                   <a v-on:click="changeStatus(2)" class="dropdown-item">完了</a>
                 </div>
@@ -147,7 +148,7 @@
       el: "#app",
       data: {
         currentProjectId: 1,
-        currentStatusId: 1,
+        currentStatusId: 0,
         projects: [
           { id: 1, name: "プロジェクトX" },
           { id: 2, name: "プロジェクトY" },
@@ -167,15 +168,19 @@
         },
         changeStatus: function (status_id) {
           this.currentStatusId = status_id;
+        },
+        checkStatus: function (status_id) {
+          if(this.currentStatusId == 0) {
+            return true;
+          }
+          return (status_id == this.currentStatusId)
         }
       },
       computed: {
-        // a computed getter
         currentData: function () {
-          // `this` points to the vm instance
           return this.todoList.filter(
             item => item.project_id == this.currentProjectId && 
-            item.status_id == this.currentStatusId
+            this.checkStatus(item.status_id)
           )
         }
       }
