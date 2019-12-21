@@ -101,7 +101,7 @@
               <div class="card-header">
                 <h4 class="card-title">{{ todoItem.text }}</h4>
                 <p class="category">Category subtitle</p>
-                <button data-toggle="modal" data-target="#editModal">
+                <button v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
                   <i class="material-icons">edit</i>
                 </button>
               </div>
@@ -120,7 +120,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">TODOの編集</h5>
+            <h5 class="modal-title">TODOの編集</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
           </div>
@@ -135,7 +135,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button v-on:click="addTodo" type="button" class="btn btn-primary">Save changes</button>
+            <button v-on:click="editTodoSave" type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
@@ -185,6 +185,7 @@
       data: {
         currentProjectId: 1,
         currentStatusId: 0,
+        editTodoId: 0,
         todoItemProjectId: 1,
         todoItemText: "テキストを追加してください",
         projects: [
@@ -219,8 +220,12 @@
             status_id: 1
           })
         },
-        editTodo: function () {
-          console.log("編集開始")
+        editTodo: function (todoId) {
+          this.editTodoId = todoId;
+        },
+        editTodoSave: function () {
+          let item = this.todoList.find((todo) => todo.id == this.editTodoId);
+          item.text = this.todoItemText;
         }
       },
       computed: {
