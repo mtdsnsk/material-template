@@ -23,15 +23,16 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- Material Kit CSS -->
   <link href="assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
 </head>
 
 <body>
-  <div class="wrapper ">
-    <div class="sidebar" data-color="purple" data-background-color="white">
+  <div id="app" class="wrapper ">
+    <div class="sidebar" data-color="azure" data-background-color="white">
       <!--
       Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
@@ -47,22 +48,10 @@
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="nav-item active  ">
-            <a class="nav-link" href="#0">
+          <li v-for="project in projects" class="nav-item active">
+            <a class="nav-link" href="#0" v-on:click="select(project.id)">
               <i class="material-icons">dashboard</i>
-              <p>ぷろじぇくとA</p>
-            </a>
-          </li>
-          <li class="nav-item active  ">
-            <a class="nav-link" href="#0">
-              <i class="material-icons">dashboard</i>
-              <p>ぷろじぇくとB</p>
-            </a>
-          </li>
-          <li class="nav-item active  ">
-            <a class="nav-link" href="#0">
-              <i class="material-icons">dashboard</i>
-              <p>ぷろじぇくとC</p>
+              <p>{{ project.name }}</p>
             </a>
           </li>
           <!-- your sidebar here -->
@@ -76,7 +65,8 @@
           <div class="navbar-wrapper">
             <a class="navbar-brand" href="#pablo">Dashboard</a>
           </div>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+            aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
             <span class="navbar-toggler-icon icon-bar"></span>
             <span class="navbar-toggler-icon icon-bar"></span>
@@ -98,6 +88,14 @@
       <div class="content">
         <div class="container-fluid">
           <!-- your content here -->
+          <ul class="nav">
+            <li v-for="todoItem in currentData" class="nav-item active">
+              <a class="nav-link" href="#0" v-on:click="select(project.id)">
+                <p>{{ todoItem.text }}</p>
+              </a>
+            </li>
+            <!-- your sidebar here -->
+          </ul>
         </div>
       </div>
       <footer class="footer">
@@ -112,10 +110,6 @@
             </ul>
           </nav>
           <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons">favorite</i> by
             <a href="#" target="_blank">Creative Tim</a> for a better web.
           </div>
           <!-- your footer here -->
@@ -123,6 +117,33 @@
       </footer>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var vm = new Vue({
+      el: "#app",
+      data: {
+        currentData: [],
+        projects: [
+          { id: 1, name: "プロジェクトX" },
+          { id: 2, name: "プロジェクトY" },
+          { id: 3, name: "プロジェクトZ" }
+        ],
+        todoList: [
+          { id: 1, project_id: 1, text: "ああああ" },
+          { id: 2, project_id: 1, text: "いいいい" },
+          { id: 3, project_id: 1, text: "うううう" },
+          { id: 4, project_id: 2, text: "ええええ" },
+          { id: 5, project_id: 2, text: "おおおお" }
+        ]
+      },
+      methods: {
+        select: function (project_id) {
+          console.log("選択されました" + project_id);
+          this.currentData = this.todoList.filter(item => item.project_id == project_id)
+        }
+      }
+    })
+  </script>
 </body>
 
 </html>
