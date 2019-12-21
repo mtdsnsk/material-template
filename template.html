@@ -95,26 +95,69 @@
       <!-- End Navbar -->
       <div class="content">
         <div class="container-fluid">
-          <!-- your content here -->
-          <div v-for="todoItem in currentData" draggable="true" class="col-md-3">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">{{ todoItem.text }}</h4>
-                <p class="category">Category subtitle</p>
-                <button v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
-                  <i class="material-icons">edit</i>
-                </button>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-4 col-lg-4">
+                サイドバー
+                <!-- your content here -->
+                <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4 class="card-title">{{ todoItem.text }}</h4>
+                      <p class="category">Category subtitle</p>
+                      <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
+                        <i class="material-icons">edit</i>
+                      </a>
+                    </div>
+                    <div class="card-body">
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="card-body">
+              <div class="col-sm-4 col-lg-4">
+                進行中
+                <!-- your content here -->
+                <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4 class="card-title">{{ todoItem.text }}</h4>
+                      <p class="category">Category subtitle</p>
+                      <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
+                        <i class="material-icons">edit</i>
+                      </a>
+                    </div>
+                    <div class="card-body">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4">
+                完了
+                <!-- your content here -->
+                <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4 class="card-title">{{ todoItem.text }}</h4>
+                      <p class="category">Category subtitle</p>
+                      <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
+                        <i class="material-icons">edit</i>
+                      </a>
+                    </div>
+                    <div class="card-body">
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
       <my-footer></my-footer>
     </div>
 
-    <!-- Modal -->
+    <!-- 編集用のModal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -140,34 +183,32 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">TODOの追加</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <select v-model="todoItemProjectId" class="form-control selectpicker" data-style="btn btn-link"
-              id="exampleFormControlSelect1">
-              <option v-for="project in projects" v-bind:value="project.id">{{ project.name }}</option>
-            </select>
-            <input v-model="todoItemText" class="form-control" placeholder="TODOのコンテンツ">
+    <!-- 保存用のModal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">TODOの追加</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button v-on:click="addTodo" type="button" class="btn btn-primary">Save changes</button>
+          <div class="modal-body">
+            <div class="form-group">
+              <select v-model="todoItemProjectId" class="form-control selectpicker" data-style="btn btn-link"
+                id="exampleFormControlSelect1">
+                <option v-for="project in projects" v-bind:value="project.id">{{ project.name }}</option>
+              </select>
+              <input v-model="todoItemText" class="form-control" placeholder="TODOのコンテンツ">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button v-on:click="addTodo" type="button" class="btn btn-primary">Save changes</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 
   <!--   Core JS Files   -->
