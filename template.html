@@ -96,7 +96,7 @@
       <div class="content">
         <div class="container-fluid">
           <!-- your content here -->
-          <div v-for="todoItem in currentData" class="col-md-3">
+          <div v-for="todoItem in currentData" draggable="true" class="col-md-3">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">{{ todoItem.text }}</h4>
@@ -110,31 +110,27 @@
       </div>
       <my-footer></my-footer>
     </div>
-  </div>
 
-  <!-- Button trigger modal -->
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">TODOの追加</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <input v-model="todoItemText" class="form-control" placeholder="TODOのコンテンツ">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button v-on:click="addTodo" type="button" class="btn btn-primary">Save changes</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
   <!--   Core JS Files   -->
   <script src="assets/js/core/jquery.min.js" type="text/javascript"></script>
   <script src="assets/js/core/popper.min.js" type="text/javascript"></script>
@@ -144,11 +140,13 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="assets/js/template.js"></script>
   <script>
+
     var vm = new Vue({
       el: "#app",
       data: {
         currentProjectId: 1,
         currentStatusId: 0,
+        todoItemText: "テキストを追加してください",
         projects: [
           { id: 1, name: "プロジェクトX" },
           { id: 2, name: "プロジェクトY" },
@@ -170,17 +168,23 @@
           this.currentStatusId = status_id;
         },
         checkStatus: function (status_id) {
-          if(this.currentStatusId == 0) {
-            return true;
-          }
+          if (this.currentStatusId == 0) return true;
           return (status_id == this.currentStatusId)
+        },
+        addTodo: function(){
+          this.todoList.push({
+            id: 1, 
+            project_id: 1, 
+            text: this.todoItemText, 
+            status_id: 1
+          })
         }
       },
       computed: {
         currentData: function () {
           return this.todoList.filter(
-            item => item.project_id == this.currentProjectId && 
-            this.checkStatus(item.status_id)
+            item => item.project_id == this.currentProjectId &&
+              this.checkStatus(item.status_id)
           )
         }
       }
