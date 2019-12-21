@@ -34,9 +34,6 @@
   <div id="app" class="wrapper ">
     <div class="sidebar" data-color="azure" data-background-color="white">
       <div class="logo">
-        <a href="#" class="simple-text logo-mini">
-          CT
-        </a>
         <a href="#" class="simple-text logo-normal">
           Creative Tim
         </a>
@@ -49,12 +46,18 @@
               <p>{{ project.name }}</p>
             </a>
           </li>
+          <hr>
+          <li class="nav-item text-center">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              プロジェクト追加
+            </button>
+          </li>
           <!-- your sidebar here -->
         </ul>
+
       </div>
     </div>
     <div class="main-panel">
-
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
         <div class="container-fluid">
@@ -77,12 +80,13 @@
               </li>
               <!-- your navbar here -->
               <div class="dropdown show">
-                  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ステータスを絞り込む</a>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a v-on:click="changeStatus(1)" class="dropdown-item">進行中</a>
-                    <a v-on:click="changeStatus(2)" class="dropdown-item">完了</a>
-                  </div>
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ステータスを絞り込む</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a v-on:click="changeStatus(1)" class="dropdown-item">進行中</a>
+                  <a v-on:click="changeStatus(2)" class="dropdown-item">完了</a>
                 </div>
+              </div>
             </ul>
           </div>
         </div>
@@ -101,19 +105,33 @@
               </div>
             </div>
           </div>
-          <div v-for="todoItem in currentData" class="col-md-3">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">{{ todoItem.text }}</h4>
-                <p class="category">Category subtitle</p>
-              </div>
-              <div class="card-body">
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <my-footer></my-footer>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
     </div>
   </div>
   <!--   Core JS Files   -->
@@ -128,29 +146,37 @@
     var vm = new Vue({
       el: "#app",
       data: {
-        currentData: [],
+        currentProjectId: 1,
+        currentStatusId: 1,
         projects: [
           { id: 1, name: "プロジェクトX" },
           { id: 2, name: "プロジェクトY" },
           { id: 3, name: "プロジェクトZ" }
         ],
         todoList: [
-          { id: 1, project_id: 1, text: "ああああ" },
-          { id: 2, project_id: 1, text: "いいいい" },
-          { id: 3, project_id: 1, text: "うううう" },
-          { id: 4, project_id: 2, text: "ええええ" },
-          { id: 5, project_id: 2, text: "おおおお" }
+          { id: 1, project_id: 1, text: "ああああ", status_id: 1 },
+          { id: 2, project_id: 1, text: "いいいい", status_id: 2 },
+          { id: 3, project_id: 1, text: "うううう", status_id: 1 },
+          { id: 4, project_id: 2, text: "ええええ", status_id: 2 },
+          { id: 5, project_id: 2, text: "おおおお", status_id: 1 }
         ]
       },
       methods: {
         select: function (project_id) {
-          console.log("選択されました:" + project_id);
-          this.currentData = this.todoList.filter(
-            item => item.project_id == project_id
-          )
+          this.currentProjectId = project_id;
         },
         changeStatus: function (status_id) {
-          console.log("ステータス変更:" + status_id);
+          this.currentStatusId = status_id;
+        }
+      },
+      computed: {
+        // a computed getter
+        currentData: function () {
+          // `this` points to the vm instance
+          return this.todoList.filter(
+            item => item.project_id == this.currentProjectId && 
+            item.status_id == this.currentStatusId
+          )
         }
       }
     })
