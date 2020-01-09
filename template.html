@@ -1,18 +1,3 @@
-<!--
-=========================================================
- Material Dashboard - v2.1.1
-=========================================================
-
- Product Page: https://www.creative-tim.com/product/material-dashboard
- Copyright 2019 Creative Tim (https://www.creative-tim.com)
- Licensed under MIT (https://github.com/creativetimofficial/material-dashboard/blob/master/LICENSE.md)
-
- Coded by Creative Tim
-
-=========================================================
-
- The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
-
 <!doctype html>
 <html lang="en">
 
@@ -98,13 +83,13 @@
 
           <div class="container">
             <div class="row">
-              <div class="col-sm-4 col-lg-4">
+              <!--<div class="col-sm-4 col-lg-4">
                 サイドバー
-                <!-- your content here -->
+                your content here
                 <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                      <h4 class="card-title">{{ todoItem.text }}</h4>
+                      <h4 class="card-title">{{ todoItem.name }}</h4>
                       <p class="category">Category subtitle</p>
                       <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
                         <i class="material-icons">edit</i>
@@ -114,14 +99,14 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>  -->
               <div class="col-sm-4 col-lg-4">
                 進行中
                 <!-- your content here -->
                 <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                      <h4 class="card-title">{{ todoItem.text }}</h4>
+                      <h4 class="card-title">{{ todoItem.name }}</h4>
                       <p class="category">Category subtitle</p>
                       <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
                         <i class="material-icons">edit</i>
@@ -138,7 +123,7 @@
                 <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                      <h4 class="card-title">{{ todoItem.text }}</h4>
+                      <h4 class="card-title">{{ todoItem.name }}</h4>
                       <p class="category">Category subtitle</p>
                       <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
                         <i class="material-icons">edit</i>
@@ -218,67 +203,9 @@
   <script src="assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.1/axios.js"></script>
   <script src="assets/js/template.js"></script>
-  <script>
-
-    var vm = new Vue({
-      el: "#app",
-      data: {
-        currentProjectId: 1,
-        currentStatusId: 0,
-        editTodoId: 0,
-        todoItemProjectId: 1,
-        todoItemText: "テキストを追加してください",
-        projects: [
-          { id: 1, name: "プロジェクトX" },
-          { id: 2, name: "プロジェクトY" },
-          { id: 3, name: "プロジェクトZ" }
-        ],
-        todoList: [
-          { id: 1, project_id: 1, text: "ああああ", status_id: 1 },
-          { id: 2, project_id: 1, text: "いいいい", status_id: 2 },
-          { id: 3, project_id: 1, text: "うううう", status_id: 1 },
-          { id: 4, project_id: 2, text: "ええええ", status_id: 2 },
-          { id: 5, project_id: 2, text: "おおおお", status_id: 1 }
-        ]
-      },
-      methods: {
-        select: function (project_id) {
-          this.currentProjectId = project_id;
-        },
-        changeStatus: function (status_id) {
-          this.currentStatusId = status_id;
-        },
-        checkStatus: function (status_id) {
-          if (this.currentStatusId == 0) return true;
-          return (status_id == this.currentStatusId)
-        },
-        addTodo: function () {
-          this.todoList.push({
-            id: 1,
-            project_id: this.currentProjectId,
-            text: this.todoItemText,
-            status_id: 1
-          })
-        },
-        editTodo: function (todoId) {
-          this.editTodoId = todoId;
-        },
-        editTodoSave: function () {
-          let item = this.todoList.find((todo) => todo.id == this.editTodoId);
-          item.text = this.todoItemText;
-        }
-      },
-      computed: {
-        currentData: function () {
-          return this.todoList.filter(
-            item => item.project_id == this.currentProjectId &&
-              this.checkStatus(item.status_id)
-          )
-        }
-      }
-    })
-  </script>
+  <script type="text/javascript" src="./main.js"></script>
 </body>
 
 </html>
