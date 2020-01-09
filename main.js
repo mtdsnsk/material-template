@@ -21,28 +21,32 @@ var vm = new Vue({
     ]
   },
   methods: {
-    findProjectName: function (project_id) {
-      return this.projects.find(x => x.id === project_id).name
+    findStatusId: function(todoId) {
+      return this.todos.find(x => x.id === todoId).status.id
+
+    },
+    findProjectName: function (projectId) {
+      return this.projects.find(x => x.id === projectId).name
     },
     findEditTodoName: function(todoId) {
       return this.todos.find(x => x.id === todoId).name
     },
-    select: function (project_id) {
-      this.currentProjectId = project_id;
+    select: function (projectId) {
+      this.currentProjectId = projectId;
     },
-    changeStatus: function (status_id) {
-      this.currentStatusId = status_id;
+    changeStatus: function (statusId) {
+      this.currentStatusId = statusId;
     },
-    checkStatus: function (status_id) {
+    checkStatus: function (statusId) {
       if (this.currentStatusId == 0) return true;
-      return (status_id == this.currentStatusId)
+      return (statusId == this.currentStatusId)
     },
     // addTodo: function () {
     //   this.todos.push({
     //     id: 1,
     //     name: this.todoItemText,
     //     project: {id: this.currentProjectId},
-    //     status_id: 1
+    //     statusId: 1
     //   })
     // },
     editTodo: function (todoId, projectId) {
@@ -197,9 +201,76 @@ var vm = new Vue({
         console.error(error);
       }
     }, 
-  },
+    async deleteTodo(todoId) {
+      try {
+        await axios({
+          method: "POST",
+          url: this.apiURL,
+          data: {
+            query: `
+              mutation {
+                deleteTodo(input: {
+                  where: {
+                    id: ${todoId}
+                  }
+                }) {
+                  todo {
+                    id
+                    name
+                  }
+                }
+              }
+            `
+          }
+        });
+        this.getTodos();
+      } catch (error) {
+        console.error(error);
+      }
+    },   
+    async toggleStatus(todoId) {
+      let statusId = this.findStatusId(todoId)
+      statusId = statusId == "1" ? "2" : "1"
+
+      try {
+        await axios({
+          method: "POST",
+          url: this.apiURL,
+          data: {
+            query: `
+              mutation {
+                updateTodo(input: {
+                  where: {
+                    id: ${todoId}
+                  },
+                  data: {
+                    status: ${statusId}
+                  }
+                }) {
+                  todo {
+                    id
+                    name
+                    status {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            `
+          }
+        });
+        this.getTodos();
+      } catch (error) {
+        console.error(error);
+      }
+    },    },
   computed: {
     currentData: function () {
+      if (this.currentProjectId == 0) {
+        return this.todos
+      }
+
       return this.todos.filter(
         item => item.project.id == this.currentProjectId &&
           this.checkStatus(item.status.id)
