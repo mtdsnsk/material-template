@@ -1,11 +1,14 @@
-new Vue({
+var vm = new Vue({
   el: "#app",
   data: {
     currentProjectId: 0,
     currentStatusId: 1,
     editTodoId: 0,
+    editProjectId: 0,
+    editTodoName: "",
     todoItemProjectId: 1,
     todoItemText: "",
+    newProjectName: "",
     apiURL: "http://localhost:1337/graphql",
     projects: [],
     todos: [
@@ -20,6 +23,9 @@ new Vue({
   methods: {
     findProjectName: function (project_id) {
       return this.projects.find(x => x.id === project_id).name
+    },
+    findEditTodoName: function(project_id) {
+      return this.todos.find(x => x.project.id === project_id).name
     },
     select: function (project_id) {
       this.currentProjectId = project_id;
@@ -39,8 +45,10 @@ new Vue({
     //     status_id: 1
     //   })
     // },
-    editTodo: function (todoId) {
+    editTodo: function (todoId, project_id) {
       this.editTodoId = todoId;
+      this.editProjectId = project_id;
+      this.editTodoName = this.findEditTodoName(project_id);
     },
     editTodoSave: function () {
       let item = this.todos.find((todo) => todo.id == this.editTodoId);
@@ -96,8 +104,6 @@ new Vue({
       }
     },     
     async createTodo() {
-      console.log(this.todoItemText);
-      console.log(this.todoItemProjectId);
       try {
         await axios({
           method: "POST",
@@ -108,7 +114,7 @@ new Vue({
                 createTodo(input: {
                   data: {
                     name: "${this.todoItemText}",
-                    project: 1
+                    project: ${this.todoItemProjectId}
                     status: 1
                   }
                 }) {
@@ -123,6 +129,34 @@ new Vue({
         });
         this.getTodos();
         this.todoItemText = "";
+      } catch (error) {
+        console.error(error);
+      }
+    },     
+    async createProject() {
+      try {
+        await axios({
+          method: "POST",
+          url: this.apiURL,
+          data: {
+            query: `
+            mutation {
+              createProject(input: {
+                data: {
+                  name: "${this.newProjectName}",
+                }
+              }) {
+                project {
+                  id
+                  name
+                }
+              }
+            }
+            `
+          }
+        });
+        this.getProjects();
+        this.newProjectName = "";
       } catch (error) {
         console.error(error);
       }
