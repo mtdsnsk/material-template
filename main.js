@@ -5,7 +5,7 @@ new Vue({
     currentStatusId: 1,
     editTodoId: 0,
     todoItemProjectId: 1,
-    todoItemText: "テキストを追加してください",
+    todoItemText: "",
     apiURL: "http://localhost:1337/graphql",
     projects: [],
     todos: [
@@ -18,9 +18,9 @@ new Vue({
     ]
   },
   methods: {
-    // showAllProjects: function() {
-    //   this.
-    // },
+    findProjectName: function (project_id) {
+      return this.projects.find(x => x.id === project_id).name
+    },
     select: function (project_id) {
       this.currentProjectId = project_id;
     },
@@ -31,14 +31,14 @@ new Vue({
       if (this.currentStatusId == 0) return true;
       return (status_id == this.currentStatusId)
     },
-    addTodo: function () {
-      this.todos.push({
-        id: 1,
-        project_id: this.currentProjectId,
-        text: this.todoItemText,
-        status_id: 1
-      })
-    },
+    // addTodo: function () {
+    //   this.todos.push({
+    //     id: 1,
+    //     name: this.todoItemText,
+    //     project: {id: this.currentProjectId},
+    //     status_id: 1
+    //   })
+    // },
     editTodo: function (todoId) {
       this.editTodoId = todoId;
     },
@@ -91,6 +91,38 @@ new Vue({
         });
         console.log(response)
         this.todos = response.data.data.todos;
+      } catch (error) {
+        console.error(error);
+      }
+    },     
+    async createTodo() {
+      console.log(this.todoItemText);
+      console.log(this.todoItemProjectId);
+      try {
+        await axios({
+          method: "POST",
+          url: this.apiURL,
+          data: {
+            query: `
+              mutation {
+                createTodo(input: {
+                  data: {
+                    name: "${this.todoItemText}",
+                    project: 1
+                    status: 1
+                  }
+                }) {
+                  todo {
+                    id
+                    name
+                  }
+                }
+              }
+            `
+          }
+        });
+        this.getTodos();
+        this.todoItemText = "";
       } catch (error) {
         console.error(error);
       }

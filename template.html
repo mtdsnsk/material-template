@@ -80,6 +80,7 @@
       <!-- End Navbar -->
       <div class="content">
         <div class="container-fluid">
+          {{ projects }}
 
           <div class="container">
             <div class="row">
@@ -107,7 +108,7 @@
                   <div class="card">
                     <div class="card-header">
                       <h4 class="card-title">{{ todoItem.name }}</h4>
-                      <p class="category">Category subtitle</p>
+                      <p class="category">{{ findProjectName(todoItem.project.id) }}</p>
                       <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
                         <i class="material-icons">edit</i>
                       </a>
@@ -124,7 +125,7 @@
                   <div class="card">
                     <div class="card-header">
                       <h4 class="card-title">{{ todoItem.name }}</h4>
-                      <p class="category">Category subtitle</p>
+                      <p class="category">{{ findProjectName(todoItem.project.id) }}</p>
                       <a class="btn" v-on:click="editTodo(todoItem.id)" data-toggle="modal" data-target="#editModal">
                         <i class="material-icons">edit</i>
                       </a>
@@ -189,7 +190,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button v-on:click="addTodo" type="button" class="btn btn-primary">Save changes</button>
+            <button v-on:click="createTodo()" type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
