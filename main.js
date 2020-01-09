@@ -24,8 +24,8 @@ var vm = new Vue({
     findProjectName: function (project_id) {
       return this.projects.find(x => x.id === project_id).name
     },
-    findEditTodoName: function(project_id) {
-      return this.todos.find(x => x.project.id === project_id).name
+    findEditTodoName: function(todoId) {
+      return this.todos.find(x => x.id === todoId).name
     },
     select: function (project_id) {
       this.currentProjectId = project_id;
@@ -45,15 +45,15 @@ var vm = new Vue({
     //     status_id: 1
     //   })
     // },
-    editTodo: function (todoId, project_id) {
+    editTodo: function (todoId, projectId) {
       this.editTodoId = todoId;
-      this.editProjectId = project_id;
-      this.editTodoName = this.findEditTodoName(project_id);
+      this.editProjectId = projectId;
+      this.editTodoName = this.findEditTodoName(todoId);
     },
-    editTodoSave: function () {
-      let item = this.todos.find((todo) => todo.id == this.editTodoId);
-      item.text = this.todoItemText;
-    },
+    // editTodoSave: function () {
+    //   let item = this.todos.find((todo) => todo.id == this.editTodoId);
+    //   item.text = this.todoItemText;
+    // },
     async getProjects() {
       try {
         const response = await axios({
@@ -161,6 +161,42 @@ var vm = new Vue({
         console.error(error);
       }
     },     
+    async updateTodo() {
+      try {
+        await axios({
+          method: "POST",
+          url: this.apiURL,
+          data: {
+            query: `
+              mutation {
+                updateTodo(input: {
+                  where: {
+                    id: ${this.editTodoId}
+                  },
+                  data: {
+                    name: "${this.editTodoName}"
+                    project: ${this.editProjectId}
+                  }
+                }) {
+                  todo {
+                    id
+                    name
+                    project {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            `
+          }
+        });
+        this.getTodos();
+        this.editTodoId = 0;
+      } catch (error) {
+        console.error(error);
+      }
+    }, 
   },
   computed: {
     currentData: function () {
