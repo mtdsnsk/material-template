@@ -32,13 +32,13 @@
           </li>
           <hr>
           <li class="nav-item active">
-            <a v-on:click="select(0)" class="nav-link" href="#0">
+            <a v-on:click="selectProject(0)" class="nav-link" href="#0">
               <i class="material-icons">dashboard</i>
               <p>全てのTodo</p>
             </a>
           </li>
           <li v-for="project in projects" class="nav-item active">
-            <a v-on:click="select(project.id)" class="nav-link" href="#0">
+            <a v-on:click="selectProject(project.id)" class="nav-link" href="#0">
               <i class="material-icons">dashboard</i>
               <p>{{ project.name }}</p>
             </a>
@@ -69,11 +69,6 @@
                   Todoを追加
                 </button>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="material-icons">notifications</i> Notifications
-                </a>
-              </li> -->
               <!-- your navbar here -->
               <div class="dropdown show">
                 <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
@@ -91,7 +86,7 @@
       <!-- End Navbar -->
       <div class="content">
         <div class="container-fluid">
-          <div class="container" v-if="showbyProject">
+          <div class="container">
             <div class="row">
               <div class="col-sm-4 col-lg-4">
                 進行中
@@ -120,7 +115,6 @@
               </div>
               <div class="col-sm-4 col-lg-4">
                 完了
-                <!-- your content here -->
                 <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
                   <div v-if="todoItem.status.id == 2">
                     <div class="card">
@@ -134,36 +128,7 @@
                           <i class="material-icons">delete</i>
                         </a>
                       </div>
-                      <!-- <div class="card-body">
-                      </div> -->
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Statusでフィルターした場合の画面 -->
-          <div class="container" v-if="showByStatus">
-            <div class="row">
-              <div class="col-sm-4 col-lg-4">
-                <div v-for="todoItem in currentDataByStatus" draggable="true" class="col-md-12">
-                  <div class="card">
-                    <div class="card-header">
-                      <h4 class="card-title">{{ todoItem.name }}</h4>
-                      <p class="category">{{ findProjectName(todoItem.project.id) }}</p>
-                      <a class="btn" v-on:click="editTodo(todoItem.id, todoItem.project.id)" data-toggle="modal" data-target="#editModal">
-                        <i class="material-icons">edit</i>
-                      </a>
-                      <a class="btn" v-on:click="deleteTodo(todoItem.id)">
-                        <i class="material-icons">delete</i>
-                      </a>
-                      <a class="btn" v-on:click="toggleStatus(todoItem.id)">
-                        <i class="material-icons">check</i>
-                      </a>
-                    </div>
-                      <!-- <div class="card-body">
-                      </div> -->
                   </div>
                 </div>
               </div>
@@ -200,8 +165,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button v-on:click="updateTodo" type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+            <button v-on:click="updateTodo" type="button" class="btn btn-primary">保存</button>
           </div>
         </div>
       </div>
@@ -243,6 +208,7 @@
             <div class="form-group">
               <select v-model="todoItemProjectId" class="form-control selectpicker" data-style="btn btn-link"
                 id="exampleFormControlSelect1">
+                <option value="0">プロジェクトを選択</option>
                 <option v-for="project in projects" v-bind:value="project.id">{{ project.name }}</option>
               </select>
               <input v-model="todoItemText" class="form-control" placeholder="TODOのコンテンツ">
