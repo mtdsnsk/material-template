@@ -9,6 +9,8 @@ var vm = new Vue({
     todoItemProjectId: 1,
     todoItemText: "",
     newProjectName: "",
+    showbyProject: true,
+    showByStatus: false,
     apiURL: "http://localhost:1337/graphql",
     projects: [],
     todos: [
@@ -32,6 +34,7 @@ var vm = new Vue({
       return this.todos.find(x => x.id === todoId).name
     },
     select: function (projectId) {
+      this.unhideShowByProject();
       this.currentProjectId = projectId;
     },
     changeStatus: function (statusId) {
@@ -41,23 +44,23 @@ var vm = new Vue({
       if (this.currentStatusId == 0) return true;
       return (statusId == this.currentStatusId)
     },
-    // addTodo: function () {
-    //   this.todos.push({
-    //     id: 1,
-    //     name: this.todoItemText,
-    //     project: {id: this.currentProjectId},
-    //     statusId: 1
-    //   })
-    // },
+    filterTodosByStatus: function (statusId) {
+      this.hideShowByProject();
+      this.currentStatusId = statusId;
+    },
     editTodo: function (todoId, projectId) {
       this.editTodoId = todoId;
       this.editProjectId = projectId;
       this.editTodoName = this.findEditTodoName(todoId);
     },
-    // editTodoSave: function () {
-    //   let item = this.todos.find((todo) => todo.id == this.editTodoId);
-    //   item.text = this.todoItemText;
-    // },
+    hideShowByProject: function () {
+      this.showbyProject = false;
+      this.showByStatus = true;
+    },
+    unhideShowByProject: function () {
+      this.showbyProject = true;
+      this.showByStatus = false;
+    },
     async getProjects() {
       try {
         const response = await axios({
@@ -264,7 +267,8 @@ var vm = new Vue({
       } catch (error) {
         console.error(error);
       }
-    },    },
+    },    
+  },
   computed: {
     currentData: function () {
       if (this.currentProjectId == 0) {
@@ -274,6 +278,15 @@ var vm = new Vue({
       return this.todos.filter(
         item => item.project.id == this.currentProjectId &&
           this.checkStatus(item.status.id)
+      )
+    },
+    currentDataByStatus: function () {
+      if (this.currentStatusId == 0) {
+        return this.todos
+      }
+
+      return  this.todos.filter(
+        item => item.status.id == this.currentStatusId
       )
     }
   },
