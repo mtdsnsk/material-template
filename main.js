@@ -11,16 +11,11 @@ var vm = new Vue({
     newProjectName: "",
     showbyProject: true,
     showByStatus: false,
-    apiURL: "http://localhost:1337/graphql",
+    projectSelected: false,
+    // apiURL: "http://localhost:1337/graphql",
+    apiURL: "https://vast-cove-10326.herokuapp.com/graphql",
     projects: [],
-    todos: [
-      { 
-        id: 0, 
-        name: "", 
-        status: { id: 0 },
-        project: { id: 0 }
-      }
-    ]
+    todos: []
   },
   methods: {
     findStatusId: function(todoId) {
@@ -87,7 +82,7 @@ var vm = new Vue({
             `
           }
         });
-        console.log(response)
+        console.log(response);
         this.todos = response.data.data.todos;
       } catch (error) {
         console.error(error);
@@ -117,14 +112,7 @@ var vm = new Vue({
             `
           }
         });
-        this.todos.push(
-          { 
-            id: 0, 
-            name: this.todoItemText, 
-            status: { id: 1 },
-            project: { id: this.todoItemProjectId }
-          }
-        )
+        this.getTodos();
         this.todoItemText = "";
       } catch (error) {
         console.error(error);
@@ -195,30 +183,32 @@ var vm = new Vue({
       }
     }, 
     async deleteTodo(todoId) {
-      try {
-        await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-              mutation {
-                deleteTodo(input: {
-                  where: {
-                    id: ${todoId}
-                  }
-                }) {
-                  todo {
-                    id
-                    name
+      if(confirm('本当に削除しますか？')){
+        try {
+          await axios({
+            method: "POST",
+            url: this.apiURL,
+            data: {
+              query: `
+                mutation {
+                  deleteTodo(input: {
+                    where: {
+                      id: ${todoId}
+                    }
+                  }) {
+                    todo {
+                      id
+                      name
+                    }
                   }
                 }
-              }
-            `
-          }
-        });
-        this.getTodos();
-      } catch (error) {
-        console.error(error);
+              `
+            }
+          });
+          this.getTodos();
+        } catch (error) {
+          console.error(error);
+        }
       }
     },   
     async toggleStatus(todoId) {
@@ -268,6 +258,16 @@ var vm = new Vue({
       return this.todos.filter(
         item => item.project.id == this.currentProjectId 
       )
+    },
+    isAddTodoDisabled: function () {
+      if (this.todoItemProjectId == 0 || this.todoItemText == "") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    isAddProjectDisabled: function () {
+      return this.newProjectName == "" ? true : false;
     }
   },
   created() {
