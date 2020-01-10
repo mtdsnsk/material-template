@@ -20,7 +20,6 @@ var vm = new Vue({
   methods: {
     findStatusId: function(todoId) {
       return this.todos.find(x => x.id === todoId).status.id
-
     },
     findProjectName: function (projectId) {
       const project = this.projects.find(x => x.id === projectId);
@@ -48,6 +47,10 @@ var vm = new Vue({
     },
     addTodoToTodoObject: function (todo) {
       this.todos.push(todo);
+    },
+    removeTodoFromTodoObject: function (todoId) {
+      const index = this.todos.findIndex(x => x.id == todoId);
+      this.todos.pop(index);
     },
     async getProjects() {
       try {
@@ -221,7 +224,7 @@ var vm = new Vue({
               `
             }
           });
-          this.getTodos();
+        this.removeTodoFromTodoObject(todoId);
         } catch (error) {
           console.error(error);
         }
@@ -249,10 +252,6 @@ var vm = new Vue({
                   todo {
                     id
                     name
-                    status {
-                      id
-                      name
-                    }
                   }
                 }
               }
