@@ -46,6 +46,9 @@ var vm = new Vue({
       const todo = this.todos.find(x => x.id === todoId);
       todo.status.id = todo.status.id == "1" ? "2" : "1";
     },
+    addTodoToTodoObject: function (todo) {
+      this.todos.push(todo);
+    },
     async getProjects() {
       try {
         const response = await axios({
@@ -97,7 +100,7 @@ var vm = new Vue({
     },     
     async createTodo() {
       try {
-        await axios({
+        const response = await axios({
           method: "POST",
           url: this.apiURL,
           data: {
@@ -113,13 +116,19 @@ var vm = new Vue({
                   todo {
                     id
                     name
+                    project {
+                      id
+                    }
+                    status {
+                      id
+                    }
                   }
                 }
               }
             `
           }
         });
-        this.getTodos();
+        this.addTodoToTodoObject(response.data.data.createTodo.todo);
         this.todoItemText = "";
       } catch (error) {
         console.error(error);
