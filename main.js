@@ -23,7 +23,10 @@ var vm = new Vue({
 
     },
     findProjectName: function (projectId) {
-      return this.projects.find(x => x.id === projectId).name
+      const project = this.projects.find(x => x.id === projectId);
+      if (project) {
+        return project.name
+      }
     },
     findEditTodoName: function(todoId) {
       return this.todos.find(x => x.id === todoId).name
@@ -38,6 +41,10 @@ var vm = new Vue({
       this.editTodoId = todoId;
       this.editProjectId = projectId;
       this.editTodoName = this.findEditTodoName(todoId);
+    },
+    changeTodoStatus: function (todoId) {
+      const todo = this.todos.find(x => x.id === todoId);
+      todo.status.id = todo.status.id == "1" ? "2" : "1";
     },
     async getProjects() {
       try {
@@ -243,7 +250,8 @@ var vm = new Vue({
             `
           }
         });
-        this.getTodos();
+
+        this.changeTodoStatus(todoId);
       } catch (error) {
         console.error(error);
       }
@@ -260,11 +268,7 @@ var vm = new Vue({
       )
     },
     isAddTodoDisabled: function () {
-      if (this.todoItemProjectId == 0 || this.todoItemText == "") {
-        return true;
-      } else {
-        return false;
-      }
+      return (this.todoItemProjectId == 0 || this.todoItemText == "") ? true : false;
     },
     isAddProjectDisabled: function () {
       return this.newProjectName == "" ? true : false;

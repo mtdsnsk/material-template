@@ -90,7 +90,6 @@
             <div class="row">
               <div class="col-sm-4 col-lg-4">
                 進行中
-                <!-- your content here -->
                 <div v-for="todoItem in currentData" draggable="true" class="col-md-12">
                   <div v-if="todoItem.status.id == 1">
                     <div class="card">
@@ -122,7 +121,7 @@
                         <h4 class="card-title">{{ todoItem.name }}</h4>
                         <p class="category">{{ findProjectName(todoItem.project.id) }}</p>
                         <a class="btn" v-on:click="toggleStatus(todoItem.id)">
-                          <i class="material-icons">進行中に戻す</i>
+                          進行中に戻す
                         </a>
                         <a class="btn" v-on:click="deleteTodo(todoItem.id)">
                           <i class="material-icons">delete</i>
