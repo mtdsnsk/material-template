@@ -6,46 +6,34 @@ var vm = new Vue({
     editTodoId: 0,
     editProjectId: 0,
     editTodoName: "",
-    todoItemProjectId: 1,
+    todoItemProjectId: 0,
     todoItemText: "",
-    newProjectName: "",
+    // newProjectName: "",
     showbyProject: true,
     showByStatus: false,
-    apiURL: "http://localhost:1337/graphql",
+    projectSelected: false,
+    apiURL: "https://vast-cove-10326.herokuapp.com/graphql",
+    restranURL: "http://localhost:1337/graphql",
     projects: [],
-    todos: [
-      { 
-        id: 0, 
-        name: "", 
-        status: {id: 0},
-        project: {id: 0}
-      }
-    ]
+    todos: []
   },
   methods: {
     findStatusId: function(todoId) {
       return this.todos.find(x => x.id === todoId).status.id
-
     },
     findProjectName: function (projectId) {
-      return this.projects.find(x => x.id === projectId).name
+      const project = this.projects.find(x => x.id === projectId);
+      if (project) {
+        return project.name
+      }
     },
     findEditTodoName: function(todoId) {
       return this.todos.find(x => x.id === todoId).name
     },
-    select: function (projectId) {
-      this.unhideShowByProject();
+    selectProject: function (projectId) {
       this.currentProjectId = projectId;
     },
     changeStatus: function (statusId) {
-      this.currentStatusId = statusId;
-    },
-    checkStatus: function (statusId) {
-      if (this.currentStatusId == 0) return true;
-      return (statusId == this.currentStatusId)
-    },
-    filterTodosByStatus: function (statusId) {
-      this.hideShowByProject();
       this.currentStatusId = statusId;
     },
     editTodo: function (todoId, projectId) {
@@ -53,13 +41,38 @@ var vm = new Vue({
       this.editProjectId = projectId;
       this.editTodoName = this.findEditTodoName(todoId);
     },
-    hideShowByProject: function () {
-      this.showbyProject = false;
-      this.showByStatus = true;
+    changeTodoStatus: function (todoId) {
+      const todo = this.todos.find(x => x.id === todoId);
+      todo.status.id = todo.status.id == "1" ? "2" : "1";
     },
-    unhideShowByProject: function () {
-      this.showbyProject = true;
-      this.showByStatus = false;
+    addTodoToTodoObject: function (todo) {
+      this.todos.push(todo);
+    },
+    removeTodoFromTodoObject: function (todoId) {
+      const index = this.todos.findIndex(x => x.id == todoId);
+      this.todos.pop(index);
+    },
+    async getRestrants(id) {
+      try {
+        const response = await axios({
+          method: "POST",
+          url: this.restranURL,
+          data: {
+            query: `
+              query getRestaurants {
+                restaurant(id: ${id}) {
+                  id
+                  name
+                  description
+                }
+              }
+            `
+          }
+        });
+        console.log(response.data.data.restaurant)
+      } catch (error) {
+        console.error(error);
+      }
     },
     async getProjects() {
       try {
@@ -77,7 +90,7 @@ var vm = new Vue({
             `
           }
         });
-        this.projects = response.data.data.projects;
+        // this.projects = response.data.data.projects;
       } catch (error) {
         console.error(error);
       }
@@ -104,131 +117,39 @@ var vm = new Vue({
             `
           }
         });
-        console.log(response)
+        console.log(response);
         this.todos = response.data.data.todos;
       } catch (error) {
         console.error(error);
       }
     },     
-    async createTodo() {
-      try {
-        await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-              mutation {
-                createTodo(input: {
-                  data: {
-                    name: "${this.todoItemText}",
-                    project: ${this.todoItemProjectId}
-                    status: 1
-                  }
-                }) {
-                  todo {
-                    id
-                    name
-                  }
-                }
-              }
-            `
-          }
-        });
-        this.getTodos();
-        this.todoItemText = "";
-      } catch (error) {
-        console.error(error);
-      }
-    },     
-    async createProject() {
-      try {
-        await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-            mutation {
-              createProject(input: {
-                data: {
-                  name: "${this.newProjectName}",
-                }
-              }) {
-                project {
-                  id
-                  name
-                }
-              }
-            }
-            `
-          }
-        });
-        this.getProjects();
-        this.newProjectName = "";
-      } catch (error) {
-        console.error(error);
-      }
-    },     
-    async updateTodo() {
-      try {
-        await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-              mutation {
-                updateTodo(input: {
-                  where: {
-                    id: ${this.editTodoId}
-                  },
-                  data: {
-                    name: "${this.editTodoName}"
-                    project: ${this.editProjectId}
-                  }
-                }) {
-                  todo {
-                    id
-                    name
-                    project {
+    async deleteTodo(todoId) {
+      if(confirm('本当に削除しますか？')){
+        try {
+          await axios({
+            method: "POST",
+            url: this.apiURL,
+            data: {
+              query: `
+                mutation {
+                  deleteTodo(input: {
+                    where: {
+                      id: ${todoId}
+                    }
+                  }) {
+                    todo {
                       id
                       name
                     }
                   }
                 }
-              }
-            `
-          }
-        });
-        this.getTodos();
-        this.editTodoId = 0;
-      } catch (error) {
-        console.error(error);
-      }
-    }, 
-    async deleteTodo(todoId) {
-      try {
-        await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-              mutation {
-                deleteTodo(input: {
-                  where: {
-                    id: ${todoId}
-                  }
-                }) {
-                  todo {
-                    id
-                    name
-                  }
-                }
-              }
-            `
-          }
-        });
-        this.getTodos();
-      } catch (error) {
-        console.error(error);
+              `
+            }
+          });
+        this.removeTodoFromTodoObject(todoId);
+        } catch (error) {
+          console.error(error);
+        }
       }
     },   
     async toggleStatus(todoId) {
@@ -253,17 +174,14 @@ var vm = new Vue({
                   todo {
                     id
                     name
-                    status {
-                      id
-                      name
-                    }
                   }
                 }
               }
             `
           }
         });
-        this.getTodos();
+
+        this.changeTodoStatus(todoId);
       } catch (error) {
         console.error(error);
       }
@@ -276,18 +194,14 @@ var vm = new Vue({
       }
 
       return this.todos.filter(
-        item => item.project.id == this.currentProjectId &&
-          this.checkStatus(item.status.id)
+        item => item.project.id == this.currentProjectId 
       )
     },
-    currentDataByStatus: function () {
-      if (this.currentStatusId == 0) {
-        return this.todos
-      }
-
-      return  this.todos.filter(
-        item => item.status.id == this.currentStatusId
-      )
+    isAddTodoDisabled: function () {
+      // return (this.todoItemProjectId == 0 || this.todoItemText == "") ? true : false;
+    },
+    isAddProjectDisabled: function () {
+      // return this.newProjectName == "" ? true : false;
     }
   },
   created() {
