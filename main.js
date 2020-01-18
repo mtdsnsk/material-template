@@ -8,12 +8,12 @@ var vm = new Vue({
     editTodoName: "",
     todoItemProjectId: 0,
     todoItemText: "",
-    newProjectName: "",
+    // newProjectName: "",
     showbyProject: true,
     showByStatus: false,
     projectSelected: false,
-    // apiURL: "http://localhost:1337/graphql",
     apiURL: "https://vast-cove-10326.herokuapp.com/graphql",
+    restranURL: "http://localhost:1337/graphql",
     projects: [],
     todos: []
   },
@@ -52,6 +52,28 @@ var vm = new Vue({
       const index = this.todos.findIndex(x => x.id == todoId);
       this.todos.pop(index);
     },
+    async getRestrants(id) {
+      try {
+        const response = await axios({
+          method: "POST",
+          url: this.restranURL,
+          data: {
+            query: `
+              query getRestaurants {
+                restaurant(id: ${id}) {
+                  id
+                  name
+                  description
+                }
+              }
+            `
+          }
+        });
+        console.log(response.data.data.restaurant)
+      } catch (error) {
+        console.error(error);
+      }
+    },
     async getProjects() {
       try {
         const response = await axios({
@@ -68,7 +90,7 @@ var vm = new Vue({
             `
           }
         });
-        this.projects = response.data.data.projects;
+        // this.projects = response.data.data.projects;
       } catch (error) {
         console.error(error);
       }
@@ -101,106 +123,6 @@ var vm = new Vue({
         console.error(error);
       }
     },     
-    async createTodo() {
-      try {
-        const response = await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-              mutation {
-                createTodo(input: {
-                  data: {
-                    name: "${this.todoItemText}",
-                    project: ${this.todoItemProjectId}
-                    status: 1
-                  }
-                }) {
-                  todo {
-                    id
-                    name
-                    project {
-                      id
-                    }
-                    status {
-                      id
-                    }
-                  }
-                }
-              }
-            `
-          }
-        });
-        this.addTodoToTodoObject(response.data.data.createTodo.todo);
-        this.todoItemText = "";
-      } catch (error) {
-        console.error(error);
-      }
-    },     
-    async createProject() {
-      try {
-        await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-            mutation {
-              createProject(input: {
-                data: {
-                  name: "${this.newProjectName}",
-                }
-              }) {
-                project {
-                  id
-                  name
-                }
-              }
-            }
-            `
-          }
-        });
-        this.getProjects();
-        this.newProjectName = "";
-      } catch (error) {
-        console.error(error);
-      }
-    },     
-    async updateTodo() {
-      try {
-        await axios({
-          method: "POST",
-          url: this.apiURL,
-          data: {
-            query: `
-              mutation {
-                updateTodo(input: {
-                  where: {
-                    id: ${this.editTodoId}
-                  },
-                  data: {
-                    name: "${this.editTodoName}"
-                    project: ${this.editProjectId}
-                  }
-                }) {
-                  todo {
-                    id
-                    name
-                    project {
-                      id
-                      name
-                    }
-                  }
-                }
-              }
-            `
-          }
-        });
-        this.getTodos();
-        this.editTodoId = 0;
-      } catch (error) {
-        console.error(error);
-      }
-    }, 
     async deleteTodo(todoId) {
       if(confirm('本当に削除しますか？')){
         try {
@@ -276,10 +198,10 @@ var vm = new Vue({
       )
     },
     isAddTodoDisabled: function () {
-      return (this.todoItemProjectId == 0 || this.todoItemText == "") ? true : false;
+      // return (this.todoItemProjectId == 0 || this.todoItemText == "") ? true : false;
     },
     isAddProjectDisabled: function () {
-      return this.newProjectName == "" ? true : false;
+      // return this.newProjectName == "" ? true : false;
     }
   },
   created() {
