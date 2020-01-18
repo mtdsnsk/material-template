@@ -1,5 +1,12 @@
 Vue.component('add-todo-modal', {
-  props: ['addTodoObj'],
+  data: function () {
+    return {
+      addTodoObj: {
+        title: "",
+        description: ""
+      }
+    }
+  },
   template: `
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -19,7 +26,7 @@ Vue.component('add-todo-modal', {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" v-on:click="addTodoItem">TODO追加</button>
+          <button type="button" class="btn btn-primary" v-on:click="$emit('add-todo-item', addTodoObj)">TODO追加</button>
         </div>
       </div>
     </div>

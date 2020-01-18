@@ -28,7 +28,7 @@
       TODOを追加する
     </button>
 
-    <add-todo-modal v-bind:add-todo-obj="addTodoObj"></add-todo-modal>
+    <add-todo-modal v-on:add-todo-item="addTodoItem"></add-todo-modal>
   </div>
   <!--   Core JS Files   -->
   <script src="assets/js/core/jquery.min.js" type="text/javascript"></script>
@@ -50,23 +50,14 @@
           { title: "手紙を出す", description: "Aさん宛て" },
           { title: "チャットに返信する", description: "Twitter" },
           { title: "請求書を出す", description: "XXXX株式会社へ" },
-        ],
-        addTodoObj: {
-          title: "",
-          description: ""
-        }
+        ]
       },
       methods: {
-        addTodoItem: function () {
-          this.todoItemList.push(
-            this.addTodoObj
-          )
-        }
+        addTodoItem: function (obj) {
+          this.todoItemList.push(obj)
+        },
       }
     })
-
-    // APIでデータ取る
-    // vm.todoItemList = [{title: "ああああ", description: "ああああ"}]
   </script>
 </body>
 
